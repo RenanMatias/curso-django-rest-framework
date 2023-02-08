@@ -99,8 +99,6 @@ class Recipe(models.Model):
             )
             self.slug = slugify(f'{self.title}-{rand_letters}')
 
-            slug = f'{slugify(self.title)}'
-
         saved = super().save(*args, **kwargs)
 
         if self.cover:

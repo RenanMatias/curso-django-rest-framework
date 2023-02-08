@@ -21,12 +21,20 @@ def recipe_api_list(request):
             }
         )
         return Response(serializer.data)
+
     elif request.method == 'POST':
         serializer = RecipeSerializer(
+            context={
+                'request': request
+            },
             data=request.data
         )
         serializer.is_valid(raise_exception=True)
-        serializer.save()
+        serializer.save(
+            author_id=10,
+            category_id=1,
+            tags=[1, 2]
+        )
         return Response(
             serializer.data,
             status=status.HTTP_201_CREATED
