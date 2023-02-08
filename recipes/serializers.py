@@ -1,7 +1,6 @@
-from collections import defaultdict
-
 from rest_framework import serializers
 
+from authors.validators import AuthorRecipeValidator
 from tag.models import Tag
 
 from .models import Recipe
@@ -27,6 +26,12 @@ class RecipeSerializer(serializers.ModelSerializer):
             'preparation',
             'tag_objects',
             'tag_links',
+            'preparation_time',
+            'preparation_time_unit',
+            'servings',
+            'servings_unit',
+            'preparation_steps',
+            'cover'
         ]
 
     public = serializers.BooleanField(
@@ -57,22 +62,9 @@ class RecipeSerializer(serializers.ModelSerializer):
     def validate(self, attrs):
         super_validate = super().validate(attrs)
 
-        title = attrs.get('title')
-        description = attrs.get('description')
+        AuthorRecipeValidator(
+            data=attrs,
+            ErrorClass=serializers.ValidationError
+        )
 
-        if title == description:
-            raise serializers.ValidationError(
-                {
-                    'title': ['Posso', 'ter', 'mais de um erro'],
-                    'description': ['Posso', 'ter', 'mais de um erro'],
-                }
-            )
         return super_validate
-
-    def validate_title(self, value):
-        title = value
-
-        if len(title) < 5:
-            raise serializers.ValidationError('Must have at least 5 chars.')
-
-        return title
